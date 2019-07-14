@@ -4,6 +4,8 @@ import com.lgmn.common.annotation.Condition;
 import com.lgmn.common.domain.LgmnDto;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class UpdateModelDto extends LgmnDto {
 
@@ -21,19 +23,19 @@ public class UpdateModelDto extends LgmnDto {
 
     //长度    
 	@Condition
-    private Double longs;
+    private BigDecimal longs;
 
     //宽度    
 	@Condition
-    private Double width;
+    private BigDecimal width;
 
     //高度    
 	@Condition
-    private Double height;
+    private BigDecimal height;
 
     //重量    
 	@Condition
-    private Double weight;
+    private BigDecimal weight;
 
     //长度单位    
 	@Condition

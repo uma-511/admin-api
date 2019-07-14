@@ -38,7 +38,7 @@ public class LgmnUserController {
     @PostMapping("/update")
     public Result update (@RequestBody UpdateLgmnUserDto updateDto) {
         try {
-            LgmnUserEntity entity = new LgmnUserEntity();
+            LgmnUserEntity entity = service.getById(updateDto.getId());
             ObjectTransfer.transValue(updateDto, entity);
             service.update(entity);
             return Result.success("修改成功");

@@ -32,12 +32,12 @@ public class UpdateCustomerContactDto extends LgmnDto {
 	@Condition
     private String remark;
 
-    //创建人    
-	@Condition
-    private String createUser;
-
-    //创建时间    
-	@Condition
-    private Date createTime;
+//    //创建人
+//	@Condition
+//    private String createUser;
+//
+//    //创建时间
+//	@Condition
+//    private Date createTime;
 
 }

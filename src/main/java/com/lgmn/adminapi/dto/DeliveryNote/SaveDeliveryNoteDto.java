@@ -41,12 +41,12 @@ public class SaveDeliveryNoteDto extends LgmnDto {
     private String carNum;
 
     //开单时间	
-	@Condition
-    private Date createTime;
+//	@Condition
+//    private Date createTime;
 
     //开单人	
-	@Condition
-    private String createUser;
+//	@Condition
+//    private String createUser;
 
     //备注	
 	@Condition

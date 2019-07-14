@@ -32,12 +32,16 @@ public class SaveCustomerDto extends LgmnDto {
 	@Condition
     private String remark;
 
-    //创建用户（保存用户名）	
+    //客户编码
 	@Condition
-    private String createUser;
+    private String customerCode;
 
-    //创建时间	
-	@Condition
-    private Date createTime;
+//    //创建用户（保存用户名）
+//	@Condition
+//    private String createUser;
+//
+//    //创建时间
+//	@Condition
+//    private Date createTime;
 
 }

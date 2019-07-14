@@ -3,6 +3,7 @@ package com.lgmn.adminapi.controller;
 import com.lgmn.adminapi.dto.Model.SaveModelDto;
 import com.lgmn.adminapi.dto.Model.UpdateModelDto;
 import com.lgmn.adminapi.service.ModelApiService;
+import com.lgmn.adminapi.vo.ModelListVo;
 import com.lgmn.common.domain.LgmnPage;
 import com.lgmn.common.result.Result;
 import com.lgmn.common.utils.ObjectTransfer;
@@ -10,6 +11,8 @@ import com.lgmn.umaservices.basic.dto.ModelDto;
 import com.lgmn.umaservices.basic.entity.ModelEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -22,6 +25,7 @@ public class ModelController {
     @PostMapping("/page")
     public Result page (@RequestBody ModelDto dto) {
         try {
+            dto.setDelFlag(0);
             LgmnPage<ModelEntity> page = service.page(dto);
             return Result.success(page);
         } catch (Exception e) {
@@ -32,7 +36,7 @@ public class ModelController {
     @PostMapping("/update")
     public Result update (@RequestBody UpdateModelDto updateDto) {
         try {
-            ModelEntity entity = new ModelEntity();
+            ModelEntity entity = service.getById(updateDto.getId());
             ObjectTransfer.transValue(updateDto, entity);
             service.update(entity);
             return Result.success("修改成功");
@@ -55,7 +59,9 @@ public class ModelController {
 
     @PostMapping("/delete/{id}")
     public Result delete (@PathVariable("id") Integer id) {
-        service.deleteById(id);
+        ModelEntity entity = service.getById(id);
+        entity.setDelFlag(1);
+        service.update(entity);
         return Result.success("删除成功");
     }
 
@@ -63,6 +69,18 @@ public class ModelController {
     public Result detail (@PathVariable("id") Integer id) {
         ModelEntity entity = service.getById(id);
         return Result.success(entity);
+    }
+
+    @PostMapping("/getModelAllList")
+    public Result getModelAllList (@RequestBody ModelDto modelDto) {
+        try {
+            modelDto.setDelFlag(0);
+            List<ModelEntity> list = service.list(modelDto);
+            List<ModelListVo> modelListVos = new ModelListVo().getVoList(list, ModelListVo.class);
+            return Result.success(modelListVos);
+        } catch (Exception e) {
+            return Result.serverError(e.getMessage());
+        }
     }
 
 

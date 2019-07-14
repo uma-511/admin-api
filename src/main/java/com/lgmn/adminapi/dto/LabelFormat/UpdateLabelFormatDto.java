@@ -15,4 +15,7 @@ public class UpdateLabelFormatDto extends LgmnDto {
 	@Condition
     private String name;
 
+	@Condition
+    private String path;
+
 }

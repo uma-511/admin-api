@@ -47,3 +47,6 @@ qiniu:
     url: http://qncdn.gdsdec.com/
 recommend:
   url: http://www.gdsdec.com/
+label:
+  model:
+    path: /Users/xjb/Desktop/flutterDemo/

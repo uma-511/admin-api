@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class CustomerApiService extends LgmnAbstractApiService<CustomerEntity, CustomerDto, Integer, CustomerService> {
 
     @Reference(version = "${demo.service.version}")
-    private CustomerService service;
+    CustomerService service;
 
     @Override
     public void initService() {

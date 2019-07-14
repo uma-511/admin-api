@@ -32,7 +32,7 @@ public class LabelRecordController {
     @PostMapping("/update")
     public Result update (@RequestBody UpdateLabelRecordDto updateDto) {
         try {
-            LabelRecordEntity entity = new LabelRecordEntity();
+            LabelRecordEntity entity = service.getById(updateDto.getId());
             ObjectTransfer.transValue(updateDto, entity);
             service.update(entity);
             return Result.success("修改成功");

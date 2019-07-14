@@ -37,7 +37,7 @@ public class LgmnPermissionController {
     @PostMapping("/update")
     public Result update (@RequestBody UpdateLgmnPermissionDto updateDto) {
         try {
-            LgmnPermissionEntity entity = new LgmnPermissionEntity();
+            LgmnPermissionEntity entity = service.getById(updateDto.getId());
             ObjectTransfer.transValue(updateDto, entity);
             service.update(entity);
             return Result.success("修改成功");

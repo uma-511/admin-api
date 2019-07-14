@@ -1,6 +1,5 @@
 package com.lgmn.adminapi.dto.Customer;
 
-import java.util.Date;
 import com.lgmn.common.annotation.Condition;
 import com.lgmn.common.domain.LgmnDto;
 import lombok.Data;
@@ -32,12 +31,12 @@ public class UpdateCustomerDto extends LgmnDto {
 	@Condition
     private String remark;
 
-    //创建用户（保存用户名）    
-	@Condition
-    private String createUser;
+//    //创建用户（保存用户名）
+//	@Condition
+//    private String createUser;
 
-    //创建时间    
-	@Condition
-    private Date createTime;
+//    //创建时间
+//	@Condition
+//    private Date createTime;
 
 }

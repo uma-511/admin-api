@@ -3,11 +3,13 @@ package com.lgmn.adminapi.controller;
 import com.lgmn.adminapi.dto.DeliveryNote.SaveDeliveryNoteDto;
 import com.lgmn.adminapi.dto.DeliveryNote.UpdateDeliveryNoteDto;
 import com.lgmn.adminapi.service.DeliveryNoteApiService;
+import com.lgmn.adminapi.service.UserService;
 import com.lgmn.common.domain.LgmnPage;
 import com.lgmn.common.result.Result;
 import com.lgmn.common.utils.ObjectTransfer;
 import com.lgmn.umaservices.basic.dto.DeliveryNoteDto;
 import com.lgmn.umaservices.basic.entity.DeliveryNoteEntity;
+import com.lgmn.userservices.basic.entity.LgmnUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +21,18 @@ public class DeliveryNoteController {
     @Autowired
     DeliveryNoteApiService service;
 
+    @Autowired
+    UserService userService;
+
     @PostMapping("/page")
     public Result page (@RequestBody DeliveryNoteDto dto) {
         try {
+            dto.setDelFlag(0);
             LgmnPage<DeliveryNoteEntity> page = service.page(dto);
+            for (DeliveryNoteEntity deliveryNoteEntity : page.getList()) {
+                LgmnUserEntity lgmnUserEntity = userService.getById(deliveryNoteEntity.getCreateUser());
+                deliveryNoteEntity.setCreateUser(lgmnUserEntity.getNikeName());
+            }
             return Result.success(page);
         } catch (Exception e) {
             return Result.serverError(e.getMessage());
@@ -32,8 +42,9 @@ public class DeliveryNoteController {
     @PostMapping("/update")
     public Result update (@RequestBody UpdateDeliveryNoteDto updateDto) {
         try {
-            DeliveryNoteEntity entity = new DeliveryNoteEntity();
+            DeliveryNoteEntity entity = service.getById(updateDto.getId());
             ObjectTransfer.transValue(updateDto, entity);
+            entity.setCreateUser("402881e86b26a9cb016b26b2e7410001");
             service.update(entity);
             return Result.success("修改成功");
         } catch (Exception e) {
@@ -46,6 +57,7 @@ public class DeliveryNoteController {
         try {
             DeliveryNoteEntity entity = new DeliveryNoteEntity();
             ObjectTransfer.transValue(saveDto, entity);
+            entity.setCreateUser("402881e86b26a9cb016b26b2e7410001");
             service.add(entity);
             return Result.success("添加成功");
         } catch (Exception e) {
@@ -55,13 +67,17 @@ public class DeliveryNoteController {
 
     @PostMapping("/delete/{id}")
     public Result delete (@PathVariable("id") Integer id) {
-        service.deleteById(id);
+        DeliveryNoteEntity entity = service.getById(id);
+        entity.setDelFlag(1);
+        service.update(entity);
         return Result.success("删除成功");
     }
 
     @PostMapping("/detail/{id}")
     public Result detail (@PathVariable("id") Integer id) {
         DeliveryNoteEntity entity = service.getById(id);
+        LgmnUserEntity lgmnUserEntity = userService.getById(entity.getCreateUser());
+        entity.setCreateUser(lgmnUserEntity.getNikeName());
         return Result.success(entity);
     }
 

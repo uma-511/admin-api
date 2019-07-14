@@ -2,12 +2,14 @@ package com.lgmn.adminapi.controller;
 
 import com.lgmn.adminapi.dto.Order.SaveOrderDto;
 import com.lgmn.adminapi.dto.Order.UpdateOrderDto;
-import com.lgmn.adminapi.service.OrderApiService;
+import com.lgmn.adminapi.service.*;
+import com.lgmn.adminapi.vo.UOrderPageVo;
 import com.lgmn.common.domain.LgmnPage;
 import com.lgmn.common.result.Result;
 import com.lgmn.common.utils.ObjectTransfer;
 import com.lgmn.umaservices.basic.dto.OrderDto;
-import com.lgmn.umaservices.basic.entity.OrderEntity;
+import com.lgmn.umaservices.basic.entity.*;
+import com.lgmn.userservices.basic.entity.LgmnUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,11 +21,40 @@ public class OrderController {
     @Autowired
     OrderApiService service;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    ProductApiService productApiService;
+
+    @Autowired
+    ModelApiService modelApiService;
+
+    @Autowired
+    LabelFormatApiService labelFormatApiService;
+
+    @Autowired
+    CustomerApiService customerApiService;
+
     @PostMapping("/page")
     public Result page (@RequestBody OrderDto dto) {
         try {
-            LgmnPage<OrderEntity> page = service.page(dto);
-            return Result.success(page);
+            dto.setDelFlag(0);
+            LgmnPage<UOrderEntity> page = service.page(dto);
+            LgmnPage<UOrderPageVo> uOrderPageVoLgmnPage = new UOrderPageVo().getVoPage(page, UOrderPageVo.class);
+            for (UOrderPageVo uOrderPageVo : uOrderPageVoLgmnPage.getList()) {
+                LgmnUserEntity lgmnUserEntity = userService.getById(uOrderPageVo.getCreateUser());
+                uOrderPageVo.setCreateUser(lgmnUserEntity.getNikeName());
+                ProductEntity productEntity = productApiService.getById(uOrderPageVo.getProdId());
+                uOrderPageVo.setProdName(productEntity.getName());
+                ModelEntity modelEntity = modelApiService.getById(uOrderPageVo.getModelId());
+                uOrderPageVo.setModelName(modelEntity.getName());
+                LabelFormatEntity labelFormatEntity = labelFormatApiService.getById(uOrderPageVo.getModelId());
+                uOrderPageVo.setLableName(labelFormatEntity.getName());
+                CustomerEntity customerEntity = customerApiService.getById(uOrderPageVo.getClientId());
+                uOrderPageVo.setClientName(customerEntity.getName());
+            }
+            return Result.success(uOrderPageVoLgmnPage);
         } catch (Exception e) {
             return Result.serverError(e.getMessage());
         }
@@ -32,8 +63,9 @@ public class OrderController {
     @PostMapping("/update")
     public Result update (@RequestBody UpdateOrderDto updateDto) {
         try {
-            OrderEntity entity = new OrderEntity();
+            UOrderEntity entity = service.getById(updateDto.getId());
             ObjectTransfer.transValue(updateDto, entity);
+            entity.setCreateUser("402881e86b26a9cb016b26b2e7410001");
             service.update(entity);
             return Result.success("修改成功");
         } catch (Exception e) {
@@ -44,8 +76,9 @@ public class OrderController {
     @PostMapping("/add")
     public Result add (@RequestBody SaveOrderDto saveDto) {
         try {
-            OrderEntity entity = new OrderEntity();
+            UOrderEntity entity = new UOrderEntity();
             ObjectTransfer.transValue(saveDto, entity);
+            entity.setCreateUser("402881e86b26a9cb016b26b2e7410001");
             service.add(entity);
             return Result.success("添加成功");
         } catch (Exception e) {
@@ -55,14 +88,27 @@ public class OrderController {
 
     @PostMapping("/delete/{id}")
     public Result delete (@PathVariable("id") Integer id) {
-        service.deleteById(id);
+        UOrderEntity entity = service.getById(id);
+        entity.setDelFlag(1);
+        service.update(entity);
         return Result.success("删除成功");
     }
 
     @PostMapping("/detail/{id}")
     public Result detail (@PathVariable("id") Integer id) {
-        OrderEntity entity = service.getById(id);
-        return Result.success(entity);
+        UOrderEntity entity = service.getById(id);
+        UOrderPageVo uOrderPageVo = new UOrderPageVo().getVo(entity, UOrderPageVo.class);
+        LgmnUserEntity lgmnUserEntity = userService.getById(uOrderPageVo.getCreateUser());
+        uOrderPageVo.setCreateUser(lgmnUserEntity.getNikeName());
+        CustomerEntity customerEntity = customerApiService.getById(uOrderPageVo.getClientId());
+        uOrderPageVo.setClientName(customerEntity.getName());
+        ProductEntity productEntity = productApiService.getById(uOrderPageVo.getProdId());
+        uOrderPageVo.setProdName(productEntity.getName());
+        LabelFormatEntity labelFormatEntity = labelFormatApiService.getById(uOrderPageVo.getModelId());
+        uOrderPageVo.setLableName(labelFormatEntity.getName());
+        ModelEntity modelEntity = modelApiService.getById(uOrderPageVo.getModelId());
+        uOrderPageVo.setModelName(modelEntity.getName());
+        return Result.success(uOrderPageVo);
     }
 
 

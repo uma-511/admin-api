@@ -3,6 +3,7 @@ package com.lgmn.adminapi.controller;
 import com.lgmn.adminapi.dto.Product.SaveProductDto;
 import com.lgmn.adminapi.dto.Product.UpdateProductDto;
 import com.lgmn.adminapi.service.ProductApiService;
+import com.lgmn.adminapi.vo.ProductListVo;
 import com.lgmn.common.domain.LgmnPage;
 import com.lgmn.common.result.Result;
 import com.lgmn.common.utils.ObjectTransfer;
@@ -10,6 +11,8 @@ import com.lgmn.umaservices.basic.dto.ProductDto;
 import com.lgmn.umaservices.basic.entity.ProductEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -22,6 +25,7 @@ public class ProductController {
     @PostMapping("/page")
     public Result page (@RequestBody ProductDto dto) {
         try {
+            dto.setDelFlag(0);
             LgmnPage<ProductEntity> page = service.page(dto);
             return Result.success(page);
         } catch (Exception e) {
@@ -32,7 +36,7 @@ public class ProductController {
     @PostMapping("/update")
     public Result update (@RequestBody UpdateProductDto updateDto) {
         try {
-            ProductEntity entity = new ProductEntity();
+            ProductEntity entity = service.getById(updateDto.getId());
             ObjectTransfer.transValue(updateDto, entity);
             service.update(entity);
             return Result.success("修改成功");
@@ -55,7 +59,9 @@ public class ProductController {
 
     @PostMapping("/delete/{id}")
     public Result delete (@PathVariable("id") Integer id) {
-        service.deleteById(id);
+        ProductEntity entity = service.getById(id);
+        entity.setDelFlag(1);
+        service.update(entity);
         return Result.success("删除成功");
     }
 
@@ -63,6 +69,19 @@ public class ProductController {
     public Result detail (@PathVariable("id") Integer id) {
         ProductEntity entity = service.getById(id);
         return Result.success(entity);
+    }
+
+    @PostMapping("/getProductAllList")
+    public Result getProductAllList () {
+        try {
+            ProductDto productDto = new ProductDto();
+            productDto.setDelFlag(0);
+            List<ProductEntity> list = service.list(productDto);
+            List<ProductListVo> productListVos = new ProductListVo().getVoList(list, ProductListVo.class);
+            return Result.success(productListVos);
+        } catch (Exception e) {
+            return Result.serverError(e.getMessage());
+        }
     }
 
 
