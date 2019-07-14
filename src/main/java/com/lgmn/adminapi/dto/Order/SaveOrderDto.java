@@ -54,16 +54,16 @@ public class SaveOrderDto extends LgmnDto {
     private Timestamp deliveryDate;
 
     //数量	
-//	@Condition
-//    private Integer quantity;
+	@Condition
+    private Integer quantity;
 //
-//    //保留int1
-//	@Condition
-//    private Integer int1;
-//
-//    //保留int2
-//	@Condition
-//    private Integer int2;
+    //保留int1
+	@Condition
+    private Integer int01;
+
+    //保留int2
+	@Condition
+    private Integer int02;
 //
 //    //保留int3
 //	@Condition
