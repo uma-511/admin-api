@@ -7,6 +7,7 @@ import com.lgmn.adminapi.service.LabelRecordApiService;
 import com.lgmn.adminapi.service.LoginService;
 import com.lgmn.common.domain.LgmnUserInfo;
 import com.lgmn.common.result.Result;
+import com.lgmn.common.result.ResultEnum;
 import com.lgmn.umaservices.basic.dto.LabelRecordDto;
 import com.lgmn.umaservices.basic.entity.LabelRecordEntity;
 import com.lgmn.userservices.basic.util.UserUtil;
@@ -52,21 +53,39 @@ public class UMaApiController {
             LabelRecordDto labelRecordDto = new LabelRecordDto();
             labelRecordDto.setLabelNum(postLabelRecordDto.getOrderNo());
             List<LabelRecordEntity> labelRecordEntitys = labelRecordApiService.list(labelRecordDto);
+            if (labelRecordEntitys.size() <= 0) {
+                return Result.error(ResultEnum.DATA_NOT_EXISTS);
+            }
             LabelRecordEntity labelRecord = labelRecordEntitys.get(0);
             Integer status = null;
-            // 车间入库
+            if (labelRecord.getStatus() == 8) {
+                return Result.error(ResultEnum.DATA_PROHIBIT);
+            }
+//            if ("storage_of_workshop".equals(postLabelRecordDto.getType()) && labelRecord.getStatus() == 1) {
+//                return Result.error(ResultEnum.HASENTEREDWAREHOUSE);
+//            }
+//            if ("workshop_depot".equals(postLabelRecordDto.getType()) && labelRecord.getStatus() == 2) {
+//                return Result.error(ResultEnum.OUTOF_WAREHOUSE_ERROR);
+//            }
+            // 车间入仓
             if ("storage_of_workshop".equals(postLabelRecordDto.getType())) {
-                status = 0;
+                if (labelRecord.getStatus() != 0) {
+                    return Result.error(ResultEnum.HASENTEREDWAREHOUSE);
+                }
+                status = 1;
                 labelRecord.setInUser(lgmnUserInfo.getId());
                 labelRecord.setInTime(new Timestamp(System.currentTimeMillis()));
-                // 车间出库
-            } else if ("workshop_depot".equals(postLabelRecordDto.getType())) {
-                status = 1;
-                labelRecord.setOutUser(lgmnUserInfo.getId());
-                labelRecord.setOutTime(new Timestamp(System.currentTimeMillis()));
-            } else {
+                // 车间出仓
+            } else  {
+                if (labelRecord.getStatus() == 2) {
+                    return Result.error(ResultEnum.OUTOF_WAREHOUSE_ERROR);
+                }
+                if (labelRecord.getStatus() != 1) {
+                    return Result.error(ResultEnum.NOT_IN_WAREHOUSE_ERROR);
+                }
                 status = 2;
                 labelRecord.setOutUser(lgmnUserInfo.getId());
+                labelRecord.setOutTime(new Timestamp(System.currentTimeMillis()));
             }
             labelRecord.setStatus(status);
             labelRecordApiService.update(labelRecord);
