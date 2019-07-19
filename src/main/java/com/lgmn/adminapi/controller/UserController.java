@@ -191,7 +191,7 @@ public class UserController {
                 }
             }
         });
-        postParameters.add("username", "B" + loginDto.getUserName());
+        postParameters.add("username", loginDto.getUserName());
         postParameters.add("grant_type", "password");
         postParameters.add("password", loginDto.getPassword());
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(postParameters, httpHeaders);

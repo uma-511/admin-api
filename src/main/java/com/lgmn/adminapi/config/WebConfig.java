@@ -15,7 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
         //注意此处必须为前端地址，不能为*
         .allowedOrigins("http://localhost:8080", "http://192.168.1.104:8080")
         .allowedMethods("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH")
-        .allowCredentials(true).maxAge(3600);
+        .allowCredentials(true).maxAge(3600)
+        .allowedHeaders("Origin","X-Requested-With","Content-Type","Accept","Authorization","Token");
     }
 
     @Override
