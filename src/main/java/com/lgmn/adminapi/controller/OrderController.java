@@ -49,7 +49,7 @@ public class OrderController {
                 uOrderPageVo.setProdName(productEntity.getName());
                 ModelEntity modelEntity = modelApiService.getById(uOrderPageVo.getModelId());
                 uOrderPageVo.setModelName(modelEntity.getName());
-                LabelFormatEntity labelFormatEntity = labelFormatApiService.getById(uOrderPageVo.getModelId());
+                LabelFormatEntity labelFormatEntity = labelFormatApiService.getById(uOrderPageVo.getLableId());
                 uOrderPageVo.setLableName(labelFormatEntity.getName());
                 CustomerEntity customerEntity = customerApiService.getById(uOrderPageVo.getClientId());
                 uOrderPageVo.setClientName(customerEntity.getName());
@@ -104,7 +104,7 @@ public class OrderController {
         uOrderPageVo.setClientName(customerEntity.getName());
         ProductEntity productEntity = productApiService.getById(uOrderPageVo.getProdId());
         uOrderPageVo.setProdName(productEntity.getName());
-        LabelFormatEntity labelFormatEntity = labelFormatApiService.getById(uOrderPageVo.getModelId());
+        LabelFormatEntity labelFormatEntity = labelFormatApiService.getById(uOrderPageVo.getLableId());
         uOrderPageVo.setLableName(labelFormatEntity.getName());
         ModelEntity modelEntity = modelApiService.getById(uOrderPageVo.getModelId());
         uOrderPageVo.setModelName(modelEntity.getName());
