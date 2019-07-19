@@ -28,13 +28,17 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .requestMatchers().antMatchers(
                                       "/auth/**/api/**",
                                                     "/umaApi/postLabelRecord",
-                                                    "/umaApi/getPersonInfo")
+                                                    "/umaApi/getPersonInfo",
+                "/user/getuserinfo",
+                "/user/updatepassword")
                 .and()
                 .authorizeRequests()
                 .antMatchers( "/auth/**/api/**",
                                             "/umaApi/postLabelRecord",
-                                            "/umaApi/getPersonInfo").authenticated()
-                .and()
+                                            "/umaApi/getPersonInfo",
+                        "/user/getuserinfo",
+                        "/user/updatepassword").authenticated()
+                .and().cors().and()
                 .httpBasic();
     }
 }
