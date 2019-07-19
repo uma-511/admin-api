@@ -57,8 +57,8 @@ public class LoginService {
     }
 
     public Result login (LoginDto loginDto) throws Exception {
-        if (!Pattern.matches(regxPhone, loginDto.getPhone())) return Result.error(ResultEnum.PHONE_ERROR);
-        if (!Pattern.matches(regxPass, loginDto.getPassword())) return Result.error(ResultEnum.PASS_ERROR);
+//        if (!Pattern.matches(regxPhone, loginDto.getPhone())) return Result.error(ResultEnum.PHONE_ERROR);
+//        if (!Pattern.matches(regxPass, loginDto.getPassword())) return Result.error(ResultEnum.PASS_ERROR);
 //        List<LgmnUserEntity> lgmnUserEntities = userService.getUserByPhone(loginDto.getPhone());
         LgmnUserDto lgmnUserDto = new LgmnUserDto();
         lgmnUserDto.setAccount(loginDto.getPhone());

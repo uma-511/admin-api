@@ -31,7 +31,7 @@ public class UMaApiController {
 
     @ApiOperation(value = "登录")
     @PostMapping("/login")
-    public com.lgmn.common.result.Result login (@RequestBody LoginDto loginDto) {
+    public Result login (@RequestBody LoginDto loginDto) {
         try {
             return loginService.login(loginDto);
         } catch (Exception e) {
