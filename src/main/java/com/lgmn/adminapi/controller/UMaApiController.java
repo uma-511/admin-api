@@ -61,12 +61,6 @@ public class UMaApiController {
             if (labelRecord.getStatus() == 8) {
                 return Result.error(ResultEnum.DATA_PROHIBIT);
             }
-//            if ("storage_of_workshop".equals(postLabelRecordDto.getType()) && labelRecord.getStatus() == 1) {
-//                return Result.error(ResultEnum.HASENTEREDWAREHOUSE);
-//            }
-//            if ("workshop_depot".equals(postLabelRecordDto.getType()) && labelRecord.getStatus() == 2) {
-//                return Result.error(ResultEnum.OUTOF_WAREHOUSE_ERROR);
-//            }
             // 车间入仓
             if ("storage_of_workshop".equals(postLabelRecordDto.getType())) {
                 if (labelRecord.getStatus() != 0) {
@@ -76,7 +70,7 @@ public class UMaApiController {
                 labelRecord.setInUser(lgmnUserInfo.getId());
                 labelRecord.setInTime(new Timestamp(System.currentTimeMillis()));
                 // 车间出仓
-            } else  {
+            } else if ("workshop_depot".equals(postLabelRecordDto.getType()))  {
                 if (labelRecord.getStatus() == 2) {
                     return Result.error(ResultEnum.OUTOF_WAREHOUSE_ERROR);
                 }
@@ -86,6 +80,18 @@ public class UMaApiController {
                 status = 2;
                 labelRecord.setOutUser(lgmnUserInfo.getId());
                 labelRecord.setOutTime(new Timestamp(System.currentTimeMillis()));
+
+                // 返仓
+            } else {
+                if (labelRecord.getStatus() == 1) {
+                    return Result.error(ResultEnum.HASENTEREDWAREHOUSE);
+                }
+                if (labelRecord.getStatus() != 2) {
+                    return Result.error(ResultEnum.NOT_OUTOF_WAREHOUSE_ERROR);
+                }
+                status = 1;
+                labelRecord.setInUser(lgmnUserInfo.getId());
+                labelRecord.setInTime(new Timestamp(System.currentTimeMillis()));
             }
             labelRecord.setStatus(status);
             labelRecordApiService.update(labelRecord);
