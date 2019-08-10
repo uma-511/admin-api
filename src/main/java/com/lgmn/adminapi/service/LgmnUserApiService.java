@@ -1,12 +1,13 @@
 package com.lgmn.adminapi.service;
 
-import java.util.Date;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.lgmn.common.service.LgmnAbstractApiService;
 import com.lgmn.userservices.basic.dto.LgmnUserDto;
 import com.lgmn.userservices.basic.entity.LgmnUserEntity;
 import com.lgmn.userservices.basic.service.LgmnUserService;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 
 @Component
@@ -18,5 +19,17 @@ public class LgmnUserApiService extends LgmnAbstractApiService<LgmnUserEntity, L
     @Override
     public void initService() {
         setService(service);
+    }
+
+    public List<LgmnUserEntity> getUserByAccount(String account) throws Exception {
+        LgmnUserDto lgmnUserDto = new LgmnUserDto();
+        lgmnUserDto.setAccount(account);
+        return service.getListByDto(lgmnUserDto);
+    }
+
+    public List<LgmnUserEntity> getDataByNikeName(String nikeName) throws Exception {
+        LgmnUserDto lgmnUserDto = new LgmnUserDto();
+        lgmnUserDto.setNikeName(nikeName);
+        return service.getListByDto(lgmnUserDto);
     }
 }

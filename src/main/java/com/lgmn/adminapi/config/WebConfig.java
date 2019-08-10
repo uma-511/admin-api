@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry corsRegistry){
         corsRegistry.addMapping("/**")
         //注意此处必须为前端地址，不能为*
-        .allowedOrigins("http://localhost:8080", "http://192.168.1.104:8080")
+        .allowedOrigins("http://localhost:8080", "http://192.168.1.104:8080","http://192.168.124.12:8080","http://192.168.1.118:8080","http://192.168.124.17:8080")
         .allowedMethods("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH")
         .allowCredentials(true).maxAge(3600)
         .allowedHeaders("Origin","X-Requested-With","Content-Type","Accept","Authorization","Token");

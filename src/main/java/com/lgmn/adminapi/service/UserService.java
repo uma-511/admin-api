@@ -7,6 +7,8 @@ import com.lgmn.userservices.basic.entity.LgmnUserEntity;
 import com.lgmn.userservices.basic.service.LgmnUserService;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UserService extends LgmnAbstractApiService<LgmnUserEntity, LgmnUserDto, String, LgmnUserService> {
 
@@ -16,5 +18,17 @@ public class UserService extends LgmnAbstractApiService<LgmnUserEntity, LgmnUser
     @Override
     public void initService() {
         setService(lgmnUserService);
+    }
+
+    public List<LgmnUserEntity> getUserByAccount(String account) throws Exception {
+        LgmnUserDto lgmnUserDto = new LgmnUserDto();
+        lgmnUserDto.setAccount(account);
+        return lgmnUserService.getListByDto(lgmnUserDto);
+    }
+
+    public List<LgmnUserEntity> getDataByNikeName(String nikeName) throws Exception {
+        LgmnUserDto lgmnUserDto = new LgmnUserDto();
+        lgmnUserDto.setNikeName(nikeName);
+        return lgmnUserService.getListByDto(lgmnUserDto);
     }
 }

@@ -31,6 +31,18 @@ public class UpdateCustomerDto extends LgmnDto {
 	@Condition
     private String remark;
 
+    @Condition
+    private String contacts;
+
+    @Condition
+    private String logistics;
+
+    @Condition
+    private String logisticsPhone;
+
+    @Condition
+    private String logisticsAddress;
+
 //    //创建用户（保存用户名）
 //	@Condition
 //    private String createUser;

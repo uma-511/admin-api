@@ -4,7 +4,7 @@ import com.lgmn.adminapi.dto.permission.AddPermissionDto;
 import com.lgmn.adminapi.dto.permission.DeletePermissionDto;
 import com.lgmn.adminapi.dto.permission.EditPermissionDto;
 import com.lgmn.adminapi.dto.permission.PermissionPageDto;
-import com.lgmn.adminapi.service.PermissionService;
+import com.lgmn.adminapi.service.LgmnPermissionApiService;
 import com.lgmn.common.domain.LgmnPage;
 import com.lgmn.common.result.Result;
 import com.lgmn.common.result.ResultEnum;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/permission")
 public class PermissionController {
     @Autowired
-    PermissionService permissionService;
+    LgmnPermissionApiService permissionService;
 
     @ApiOperation(value = "获取权限")
     @PostMapping("/permissionpage")

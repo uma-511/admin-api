@@ -1,4 +1,4 @@
-package com.lgmn.adminapi.dto.user;
+package com.lgmn.adminapi.dto.LgmnUser;
 
 import lombok.Data;
 

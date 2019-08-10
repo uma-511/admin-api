@@ -18,6 +18,15 @@ public class ViewLabelRecordController {
     @PostMapping("/page")
     public Result page (@RequestBody ViewLabelRecordDto dto) {
         try {
+//            if(dto.getDateRange().size()>1){
+//                SimpleDateFormat sdf=new SimpleDateFormat("yyyy-NN-dd");
+//                try {
+//                    dto.setBeforeProdTime(new Timestamp(sdf.parse(dto.getDateRange().get(0)).getTime()));
+//                    dto.setEndProdTime( new Timestamp(sdf.parse(dto.getDateRange().get(1)).getTime()));
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+//            }
             LgmnPage<ViewLabelRecordEntity> page = service.page(dto);
             return Result.success(page);
         } catch (Exception e) {

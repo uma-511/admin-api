@@ -1,6 +1,5 @@
 package com.lgmn.adminapi.dto.Customer;
 
-import java.util.Date;
 import com.lgmn.common.annotation.Condition;
 import com.lgmn.common.domain.LgmnDto;
 import lombok.Data;
@@ -35,6 +34,18 @@ public class SaveCustomerDto extends LgmnDto {
     //客户编码
 	@Condition
     private String customerCode;
+
+    @Condition
+    private String contacts;
+
+    @Condition
+    private String logistics;
+
+    @Condition
+    private String logisticsPhone;
+
+    @Condition
+    private String logisticsAddress;
 
 //    //创建用户（保存用户名）
 //	@Condition

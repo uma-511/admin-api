@@ -7,7 +7,7 @@ import com.lgmn.adminapi.vo.UOrderPageVo;
 import com.lgmn.common.domain.LgmnPage;
 import com.lgmn.common.result.Result;
 import com.lgmn.common.utils.ObjectTransfer;
-import com.lgmn.umaservices.basic.dto.OrderDto;
+import com.lgmn.umaservices.basic.dto.ViewOrderDto;
 import com.lgmn.umaservices.basic.entity.*;
 import com.lgmn.userservices.basic.entity.LgmnUserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,25 +36,15 @@ public class OrderController {
     @Autowired
     CustomerApiService customerApiService;
 
+    @Autowired
+    ViewOrderApiService viewOrderApiService;
+
     @PostMapping("/page")
-    public Result page (@RequestBody OrderDto dto) {
+    public Result page (@RequestBody ViewOrderDto dto) {
         try {
             dto.setDelFlag(0);
-            LgmnPage<UOrderEntity> page = service.page(dto);
-            LgmnPage<UOrderPageVo> uOrderPageVoLgmnPage = new UOrderPageVo().getVoPage(page, UOrderPageVo.class);
-            for (UOrderPageVo uOrderPageVo : uOrderPageVoLgmnPage.getList()) {
-                LgmnUserEntity lgmnUserEntity = userService.getById(uOrderPageVo.getCreateUser());
-                uOrderPageVo.setCreateUser(lgmnUserEntity.getNikeName());
-                ProductEntity productEntity = productApiService.getById(uOrderPageVo.getProdId());
-                uOrderPageVo.setProdName(productEntity.getName());
-                ModelEntity modelEntity = modelApiService.getById(uOrderPageVo.getModelId());
-                uOrderPageVo.setModelName(modelEntity.getName());
-                LabelFormatEntity labelFormatEntity = labelFormatApiService.getById(uOrderPageVo.getLableId());
-                uOrderPageVo.setLableName(labelFormatEntity.getName());
-                CustomerEntity customerEntity = customerApiService.getById(uOrderPageVo.getClientId());
-                uOrderPageVo.setClientName(customerEntity.getName());
-            }
-            return Result.success(uOrderPageVoLgmnPage);
+            LgmnPage<ViewOrderEntity> page = viewOrderApiService.page(dto);
+            return Result.success(page);
         } catch (Exception e) {
             return Result.serverError(e.getMessage());
         }

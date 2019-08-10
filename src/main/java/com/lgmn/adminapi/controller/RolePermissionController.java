@@ -3,7 +3,7 @@ package com.lgmn.adminapi.controller;
 import com.lgmn.adminapi.dto.rolePermission.AddRolePermissionDto;
 import com.lgmn.adminapi.dto.rolePermission.DeleteRolePermissionDto;
 import com.lgmn.adminapi.dto.rolePermission.RolePermissionListDto;
-import com.lgmn.adminapi.service.PermissionService;
+import com.lgmn.adminapi.service.LgmnPermissionApiService;
 import com.lgmn.adminapi.service.RolePermissionService;
 import com.lgmn.common.result.Result;
 import com.lgmn.common.result.ResultEnum;
@@ -30,7 +30,7 @@ public class RolePermissionController {
     RolePermissionService rolePermissionService;
 
     @Autowired
-    PermissionService permissionService;
+    LgmnPermissionApiService permissionService;
 
     @ApiOperation(value = "获取可选权限")
     @PostMapping("/rolepermissionlist")

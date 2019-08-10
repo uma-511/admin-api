@@ -1,10 +1,10 @@
 package com.lgmn.adminapi.controller;
 
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.lgmn.adminapi.dto.LabelFormat.SaveLabelFormatDto;
 import com.lgmn.adminapi.dto.LabelFormat.UpdateLabelFormatDto;
 import com.lgmn.adminapi.service.LabelFormatApiService;
 import com.lgmn.adminapi.vo.LabelFormatListVo;
+import com.lgmn.adminapi.vo.LabelFormatSelectVo;
 import com.lgmn.adminapi.vo.UploadLabelModelVo;
 import com.lgmn.common.domain.LgmnPage;
 import com.lgmn.common.result.Result;
@@ -113,6 +113,21 @@ public class LabelFormatController {
         }
     }
 
+    @PostMapping("/labelformatSelectList")
+    public Result labelformatSelectList(){
+        Result result = Result.success("获取标签模板成功");
+        try {
+            List<LabelFormatEntity> all = service.all();
+            LabelFormatSelectVo labelFormatSelectVo = new LabelFormatSelectVo();
+            List<LabelFormatSelectVo> list = labelFormatSelectVo.getVoList(all,LabelFormatSelectVo.class);
+            result.setData(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = Result.serverError("获取标签模板失败");
+        }finally {
+            return result;
+        }
+    }
 
 //    @PostMapping("/excel")
 //    public void excel(@RequestBody SwcyAdDto swcyAdDto, HttpServletResponse response) throws Exception {

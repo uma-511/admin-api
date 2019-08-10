@@ -49,4 +49,7 @@ recommend:
   url: http://www.gdsdec.com/
 label:
   model:
-    path: /Users/xjb/Desktop/flutterDemo/
+    path: D:\
+delivery:
+  tempPath: D:/UMa/delivery_template/delivery_temp.xlsx
+  exportPath: D:/UMa/delivery_export/

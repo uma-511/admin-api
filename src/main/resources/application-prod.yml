@@ -6,7 +6,7 @@ demo:
     version: 1.0.0
 nacos:
   config:
-    server-addr: nacos-standalone-mysql:8848
+    server-addr: 127.0.0.1:8848
 spring:
   application:
     name: adminapi
@@ -24,16 +24,16 @@ dubbo:
     name: dubbo
   registry:
     id: adminapi-registry
-    address: nacos://nacos-standalone-mysql:8848
+    address: nacos://127.0.0.1:8848
 security:
   oauth2:
     resource:
       id: adminapi
-      user-info-uri: http://authserver:8088/api/member
+      user-info-uri: http://127.0.0.1:8088/api/member
       prefer-token-info: false
 lgmn:
-  token-url: http://authserver:8088/oauth/token
-  exitLogin-url: http://authserver:8088/api/exit
+  token-url: http://127.0.0.1:8088/oauth/token
+  exitLogin-url: http://127.0.0.1:8088/api/exit
 logging:
   path: /lgmn/shandian/log
 juhe:
@@ -47,3 +47,9 @@ qiniu:
     url: http://qncdn.gdsdec.com/
 recommend:
   url: http://www.gdsdec.com/
+label:
+  model:
+    path: H:/UMa/label_template/
+delivery:
+  tempPath: H:/UMa/delivery_template/delivery_temp.xlsx
+  exportPath: H:/UMa/delivery_export/
