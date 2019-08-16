@@ -1,5 +1,7 @@
 package com.lgmn.adminapi.controller;
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import com.lgmn.adminapi.dto.yjOrder.YjOrderSaveDto;
 import com.lgmn.adminapi.dto.yjOrder.YjOrderSearchDto;
 import com.lgmn.adminapi.dto.yjOrder.YjOrderUpdateDto;
@@ -11,16 +13,17 @@ import com.lgmn.common.utils.ObjectTransfer;
 import com.lgmn.umaservices.basic.dto.YjOrderDto;
 import com.lgmn.umaservices.basic.entity.YjOrderEntity;
 import com.lgmn.userservices.basic.util.UserUtil;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileOutputStream;
+import java.lang.reflect.Field;
 import java.security.Principal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 
 @RestController
@@ -111,5 +114,37 @@ public class YjOrderController {
     public Result detail (@PathVariable("id") Integer id) {
         YjOrderEntity entity = service.getById(id);
         return Result.success(entity);
+    }
+
+    @PostMapping("/exportData/{id}")
+    public void exportData(@PathVariable("id") Integer id) throws Exception {
+        System.out.println(id);
+        YjOrderEntity entity = service.getById(id);
+        TemplateExportParams params = new TemplateExportParams("templates/test.xlsx");
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("date", "2014-12-25");
+        map.put("money", 2000000.00);
+        map.put("upperMoney", "贰佰万");
+        map.put("company", "执笔潜行科技有限公司");
+        map.put("bureau", "财政局");
+        map.put("person", "JueYue");
+        map.put("phone", "1879740****");
+        Workbook workbook = ExcelExportUtil.exportExcel(params, map);
+        FileOutputStream fos = new FileOutputStream("D:/test.xlsx");
+        workbook.write(fos);
+        fos.close();
+    }
+
+
+    private static Map<String, Object> objectToMap(Object obj) throws IllegalAccessException {
+        Map<String, Object> map = new HashMap<>(16);
+        Class<?> clazz = obj.getClass();
+        for (Field field : clazz.getDeclaredFields()) {
+            field.setAccessible(true);
+            String fieldName = field.getName();
+            Object value = field.get(obj);
+            map.put(fieldName, value);
+        }
+        return map;
     }
 }
