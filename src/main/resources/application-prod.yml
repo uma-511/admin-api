@@ -51,5 +51,8 @@ label:
   model:
     path: H:/UMa/label_template/
 delivery:
-  tempPath: H:/UMa/delivery_template/delivery_temp.xlsx
+  tempPath: H:/UMa/delivery_template/delivery_temp.xls
   exportPath: H:/UMa/delivery_export/
+order:
+  tempPath: H:/UMa/order_template/order_temp.xls
+  exportPath: H:/UMa/order_export/

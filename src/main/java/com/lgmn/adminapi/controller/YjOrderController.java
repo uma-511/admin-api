@@ -1,11 +1,10 @@
 package com.lgmn.adminapi.controller;
 
-import cn.afterturn.easypoi.excel.ExcelExportUtil;
-import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import com.lgmn.adminapi.dto.yjOrder.YjOrderSaveDto;
 import com.lgmn.adminapi.dto.yjOrder.YjOrderSearchDto;
 import com.lgmn.adminapi.dto.yjOrder.YjOrderUpdateDto;
 import com.lgmn.adminapi.service.YjOrderApiService;
+import com.lgmn.adminapi.utils.ExcelUtils;
 import com.lgmn.common.domain.LgmnPage;
 import com.lgmn.common.domain.LgmnUserInfo;
 import com.lgmn.common.result.Result;
@@ -13,12 +12,14 @@ import com.lgmn.common.utils.ObjectTransfer;
 import com.lgmn.umaservices.basic.dto.YjOrderDto;
 import com.lgmn.umaservices.basic.entity.YjOrderEntity;
 import com.lgmn.userservices.basic.util.UserUtil;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.FileOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.security.Principal;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -32,6 +33,13 @@ public class YjOrderController {
 
     @Autowired
     YjOrderApiService service;
+
+    @Value("${order.tempPath}")
+    private String tempPath;
+
+    @Value("${order.exportPath}")
+    private String exportPath;
+
 
     @PostMapping("/page")
     public Result page (@RequestBody YjOrderSearchDto dto) {
@@ -117,22 +125,54 @@ public class YjOrderController {
     }
 
     @PostMapping("/exportData/{id}")
-    public void exportData(@PathVariable("id") Integer id) throws Exception {
-        System.out.println(id);
+    public void exportData(@PathVariable("id") Integer id, HttpServletResponse response) throws Exception {
         YjOrderEntity entity = service.getById(id);
-        TemplateExportParams params = new TemplateExportParams("templates/test.xlsx");
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("date", "2014-12-25");
-        map.put("money", 2000000.00);
-        map.put("upperMoney", "贰佰万");
-        map.put("company", "执笔潜行科技有限公司");
-        map.put("bureau", "财政局");
-        map.put("person", "JueYue");
-        map.put("phone", "1879740****");
-        Workbook workbook = ExcelExportUtil.exportExcel(params, map);
-        FileOutputStream fos = new FileOutputStream("D:/test.xlsx");
-        workbook.write(fos);
-        fos.close();
+        String filePath = ExcelUtils.exportOrderExcel(tempPath,exportPath, entity);
+        File file=new File(filePath);
+        // 如果文件名存在，则进行下载
+        if (file.exists()) {
+
+            // 配置文件下载
+            response.setHeader("content-type", "application/octet-stream");
+            response.setContentType("application/octet-stream");
+            // 下载文件能正常显示中文
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
+
+            // 实现文件下载
+            byte[] buffer = new byte[1024];
+            FileInputStream fis = null;
+            BufferedInputStream bis = null;
+            try {
+                fis = new FileInputStream(file);
+                bis = new BufferedInputStream(fis);
+                OutputStream os = response.getOutputStream();
+                int i = bis.read(buffer);
+                while (i != -1) {
+                    os.write(buffer, 0, i);
+                    i = bis.read(buffer);
+                }
+                System.out.println("Download the song successfully!");
+            }
+            catch (Exception e) {
+                System.out.println("Download the song failed!");
+            }
+            finally {
+                if (bis != null) {
+                    try {
+                        bis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
 
