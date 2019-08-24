@@ -142,12 +142,6 @@
             <version>1.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.lgmn</groupId>
-            <artifactId>uma-services-basic</artifactId>
-            <version>1.0</version>
-        </dependency>
-
         <!-- EasyPoi-->
         <dependency>
             <groupId>cn.afterturn</groupId>

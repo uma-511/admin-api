@@ -27,38 +27,17 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .and()
                 .requestMatchers().antMatchers(
                                       "/auth/**/api/**",
-                                                    "/umaApi/postLabelRecord",
-                                                    "/umaApi/getPersonInfo",
-                "/umaApi/delivery",
                 "/user/add",
                 "/user/update",
                 "/user/getuserinfo",
-                "/user/updatepassword",
-                "/yjProductApi/add",
-                "/yjProductApi/delete/*",
-                "/yjOrderApi/add",
-                "/yjOrderApi/update",
-                "/customerApi/add",
-                "/customerApi/update",
-                "/deliveryNoteApi/add",
-                "/deliveryNoteApi/update")
+                "/user/updatepassword")
                 .and()
                 .authorizeRequests()
                 .antMatchers( "/auth/**/api/**",
-                                            "/umaApi/postLabelRecord",
-                                            "/umaApi/getPersonInfo",
-                        "/umaApi/delivery",
                         "/user/add",
                         "/user/update",
                         "/user/getuserinfo",
-                        "/user/updatepassword",
-                        "/yjProductApi/add",
-                        "/yjProductApi/delete/*",
-                        "/yjOrderApi/add",
-                        "/yjOrderApi/update",
-                        "/customerApi/add",
-                        "/customerApi/update",
-                        "/deliveryNoteApi/update").authenticated()
+                        "/user/updatepassword").authenticated()
                 .and().cors().and()
                 .httpBasic();
     }
