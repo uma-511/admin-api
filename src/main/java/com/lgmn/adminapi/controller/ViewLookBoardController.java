@@ -34,6 +34,10 @@ public class ViewLookBoardController {
         try {
             String host = request.getRemoteHost();
 
+            if("0:0:0:0:0:0:0:1".equals(host)){
+                host = "localhost";
+            }
+
             UmaDeviceEntity umaDeviceEntity = deviceService.findByIp(host);
 
             if(umaDeviceEntity != null){
