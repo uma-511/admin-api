@@ -13,6 +13,7 @@ import com.lgmn.adminapi.vo.DeliveryNoteDetailVo;
 import com.lgmn.common.domain.LgmnPage;
 import com.lgmn.common.domain.LgmnUserInfo;
 import com.lgmn.common.result.Result;
+import com.lgmn.common.result.ResultEnum;
 import com.lgmn.common.utils.ObjectTransfer;
 import com.lgmn.umaservices.basic.dto.DeliveryListDto;
 import com.lgmn.umaservices.basic.dto.DeliveryNoteDto;
@@ -69,6 +70,19 @@ public class DeliveryNoteController {
         }
     }
 
+    @PostMapping("/remindpage")
+    public Result remindpage (@RequestBody DeliveryNoteDto dto) {
+        try {
+            dto.setHadPaid(0);
+            dto.setLtPaymentTime(new Timestamp(System.currentTimeMillis()));
+            dto.setDelFlag(0);
+            LgmnPage<DeliveryNoteEntity> page = service.page(dto);
+            return Result.success(page);
+        } catch (Exception e) {
+            return Result.serverError(e.getMessage());
+        }
+    }
+
     @PostMapping("/update")
     public Result update ( @RequestHeader String Authorization,@RequestBody UpdateDeliveryNoteDto updateDto, Principal principal) {
         try {
@@ -111,6 +125,7 @@ public class DeliveryNoteController {
             entity.setCreateTime(new Timestamp(System.currentTimeMillis()));
             entity.setDelFlag(0);
             entity.setPrinted(0);
+            entity.setHadPaid(0);
             service.add(entity);
             return Result.success("添加成功");
         } catch (Exception e) {
@@ -222,6 +237,27 @@ public class DeliveryNoteController {
         }
 
 //        ExportExcelUtils.exportExcel(response, "数据导出.xlsx", data);
+    }
+
+
+
+    @PostMapping("/payConfirm/{id}")
+    public Result payConfirm(@RequestHeader String Authorization,@PathVariable("id") Integer id, Principal principal){
+        LgmnUserInfo lgmnUserEntity = UserUtil.getCurrUser(principal);
+        DeliveryNoteEntity entity = service.getById(id);
+        Result result = Result.error(ResultEnum.DATA_NOT_EXISTS);
+        try {
+            if(entity!=null){
+                entity.setPayConfirmer(lgmnUserEntity.getNikeName());
+                entity.setHadPaid(1);
+                service.update(entity);
+                result = Result.success("确认回款成功");
+            }
+        } catch (Exception e) {
+            result = Result.serverError(e.getMessage());
+        }finally {
+            return result;
+        }
     }
 
 }

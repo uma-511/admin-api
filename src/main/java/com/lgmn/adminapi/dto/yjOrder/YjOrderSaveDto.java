@@ -2,6 +2,7 @@ package com.lgmn.adminapi.dto.yjOrder;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Data
@@ -38,5 +39,8 @@ public class YjOrderSaveDto {
     private String clientName;
     //楼层(uma_config)    
     private String floor;
-
+    //预警天数
+    private Integer alertDay;
+    //看板显示阈值
+    private BigDecimal lookboardThreshold;
 }

@@ -10,6 +10,7 @@ import com.lgmn.adminapi.vo.CustomerSelectVo;
 import com.lgmn.common.domain.LgmnPage;
 import com.lgmn.common.domain.LgmnUserInfo;
 import com.lgmn.common.result.Result;
+import com.lgmn.common.result.ResultEnum;
 import com.lgmn.common.utils.ObjectTransfer;
 import com.lgmn.umaservices.basic.dto.CustomerDto;
 import com.lgmn.umaservices.basic.entity.CustomerEntity;
@@ -116,6 +117,25 @@ public class CustomerController {
         } catch (Exception e) {
             e.printStackTrace();
             result = Result.serverError("获取客户失败");
+        }finally {
+            return result;
+        }
+    }
+
+
+
+    @PostMapping("/unreminder/{id}")
+    public Result unreminder (@PathVariable("id") Integer id) {
+       Result result=Result.error(ResultEnum.DATA_NOT_EXISTS);
+        try {
+            CustomerEntity entity = service.getById(id);
+            if(entity!=null){
+                entity.setHadReminded(1);
+                service.update(entity);
+                result = Result.success("取消提醒成功");
+            }
+        } catch (Exception e) {
+            result = Result.serverError(e.getMessage());
         }finally {
             return result;
         }

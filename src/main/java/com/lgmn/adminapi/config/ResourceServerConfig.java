@@ -38,10 +38,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 "/yjProductApi/delete/*",
                 "/yjOrderApi/add",
                 "/yjOrderApi/update",
+                "/yjOrderApi/payConfirm/*",
                 "/customerApi/add",
                 "/customerApi/update",
                 "/deliveryNoteApi/add",
-                "/deliveryNoteApi/update")
+                "/deliveryNoteApi/update",
+                "/deliveryNoteApi/payConfirm/*")
                 .and()
                 .authorizeRequests()
                 .antMatchers( "/auth/**/api/**",
@@ -54,11 +56,13 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                         "/user/updatepassword",
                         "/yjProductApi/add",
                         "/yjProductApi/delete/*",
+                        "/yjOrderApi/payConfirm/*",
                         "/yjOrderApi/add",
                         "/yjOrderApi/update",
                         "/customerApi/add",
                         "/customerApi/update",
-                        "/deliveryNoteApi/update").authenticated()
+                        "/deliveryNoteApi/update",
+                        "/deliveryNoteApi/payConfirm/*").authenticated()
                 .and().cors().and()
                 .httpBasic();
     }
