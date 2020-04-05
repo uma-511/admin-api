@@ -1,8 +1,9 @@
 package com.lgmn.adminapi.controller;
-import com.lgmn.adminapi.service.ViewYjStockApiService;
+
+import com.lgmn.adminapi.service.ViewYjStockMiappApiService;
 import com.lgmn.common.domain.LgmnPage;
 import com.lgmn.common.result.Result;
-import com.lgmn.umaservices.basic.dto.ViewYjStockDto;
+import com.lgmn.umaservices.basic.dto.ViewYjStockMiappDto;
 import com.lgmn.umaservices.basic.entity.ViewYjStockEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,15 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/viewYjStockApi")
+@RequestMapping("/viewYjStockMiappApi")
 
-public class ViewYjStockController {
+public class ViewYjStockMiappController {
 
     @Autowired
-    ViewYjStockApiService service;
+    ViewYjStockMiappApiService service;
 
     @PostMapping("/page")
-    public Result page (@RequestBody ViewYjStockDto dto) {
+    public Result page (@RequestBody ViewYjStockMiappDto dto) {
         try {
             LgmnPage<ViewYjStockEntity> page = service.page(dto);
             return Result.success(page);

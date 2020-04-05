@@ -64,6 +64,7 @@ public class ViewLookBoardController {
             LgmnPage<ViewLookBoardEntity> page = service.page(dto);
             return Result.success(page);
         } catch (Exception e) {
+            e.printStackTrace();
             return Result.serverError(e.getMessage());
         }
     }

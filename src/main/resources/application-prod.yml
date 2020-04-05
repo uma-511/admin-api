@@ -56,3 +56,10 @@ delivery:
 order:
   tempPath: H:/UMa/order_template/order_temp.xls
   exportPath: H:/UMa/order_export/
+
+ngrok:
+  server-address: tunnel.uma511.com
+  server-port: 4443
+  subdomain: yingjun
+  proto: http
+  enable: false

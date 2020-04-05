@@ -27,6 +27,10 @@ public class UpdateCustomerDto extends LgmnDto {
 	@Condition
     private String address;
 
+    //客户编码
+    @Condition
+    private String customerCode;
+
     //备注    
 	@Condition
     private String remark;

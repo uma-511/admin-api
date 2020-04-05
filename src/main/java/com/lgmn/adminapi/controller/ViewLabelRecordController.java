@@ -1,5 +1,6 @@
 package com.lgmn.adminapi.controller;
 
+import com.lgmn.adminapi.dto.viewLabelRecord.QueryViewLabelRecord;
 import com.lgmn.adminapi.service.ViewLabelRecordApiService;
 import com.lgmn.common.domain.LgmnPage;
 import com.lgmn.common.result.Result;
@@ -16,7 +17,7 @@ public class ViewLabelRecordController {
     ViewLabelRecordApiService service;
 
     @PostMapping("/page")
-    public Result page (@RequestBody ViewLabelRecordDto dto) {
+    public Result page (@RequestBody QueryViewLabelRecord dto) {
         try {
 //            if(dto.getDateRange().size()>1){
 //                SimpleDateFormat sdf=new SimpleDateFormat("yyyy-NN-dd");
@@ -27,7 +28,16 @@ public class ViewLabelRecordController {
 //                    e.printStackTrace();
 //                }
 //            }
-            LgmnPage<ViewLabelRecordEntity> page = service.page(dto);
+            ViewLabelRecordDto viewLabelRecordDto = new ViewLabelRecordDto();
+            viewLabelRecordDto.setOrderNo(dto.getOrderNo());
+            viewLabelRecordDto.setLabelNum(dto.getLabelNum());
+            viewLabelRecordDto.setPageNumber(dto.getPageNumber());
+            viewLabelRecordDto.setPageSize(dto.getPageSize());
+            if(dto.getSectionDay()!=null) {
+                viewLabelRecordDto.setBeforeProdTime(dto.getSectionDay().get(0));
+                viewLabelRecordDto.setEndProdTime(dto.getSectionDay().get(1));
+            }
+            LgmnPage<ViewLabelRecordEntity> page = service.page(viewLabelRecordDto);
             return Result.success(page);
         } catch (Exception e) {
             return Result.serverError(e.getMessage());

@@ -107,6 +107,7 @@ public class UMaApiController {
                 status = 1;
                 labelRecord.setInUser(lgmnUserInfo.getId());
                 labelRecord.setInTime(new Timestamp(System.currentTimeMillis()));
+                updateDeliveryList(labelRecord);
             }
             labelRecord.setStatus(status);
             labelRecordApiService.update(labelRecord);
@@ -225,8 +226,39 @@ public class UMaApiController {
                 deliveryListApiService.add(deliveryListEntity);
             }
         }
-        labelRecordApiService.update(labelRecord);
+//        labelRecordApiService.update(labelRecord);
 
+    }
+
+    private void updateDeliveryList(LabelRecordEntity labelRecord) {
+        DeliveryNoteEntity deliveryNoteEntity = deliveryNoteApiService.getDeliverByNum(labelRecord.getDeliveryNum());
+        YjOrderEntity orderEntity = orderApiService.getById(labelRecord.getOrderId());
+        if(deliveryNoteEntity!=null){
+            DeliveryListDto deliveryListDto = new DeliveryListDto();
+            deliveryListDto.setDeliveryId(deliveryNoteEntity.getId());
+            deliveryListDto.setClientId(deliveryNoteEntity.getCustomerId());
+            deliveryListDto.setName(orderEntity.getName());
+            deliveryListDto.setSpecs(orderEntity.getSpecs());
+            deliveryListDto.setWidth(orderEntity.getWidth());
+            deliveryListDto.setColor(orderEntity.getColor());
+            DeliveryListEntity deliveryListEntity = deliveryListApiService.getByDto(deliveryListDto);
+            if(deliveryListEntity!=null){
+                int deliveryListQuantity = deliveryListEntity.getQuantity();
+                deliveryListQuantity = deliveryListQuantity - labelRecord.getQuantity();
+
+                int packageQuantity = deliveryListEntity.getPackageQuantity();
+                packageQuantity = packageQuantity - 1;
+
+                if(packageQuantity > 0){
+                    deliveryListEntity.setQuantity(deliveryListQuantity);
+                    deliveryListEntity.setPackageQuantity(packageQuantity);
+                    deliveryListEntity.setScanQuantity(packageQuantity);
+                    deliveryListApiService.update(deliveryListEntity);
+                }else{
+                    deliveryListApiService.deleteById(deliveryListEntity.getId());
+                }
+            }
+        }
     }
 
 }

@@ -93,6 +93,26 @@ public class LgmnUserController {
         return Result.success("添加成功");
     }
 
+    @PostMapping("/updatepwd")
+    public Result updatePasword(@RequestHeader String Authorization, @RequestBody UpdatePwdByAdminDto updateDto, Principal principal){
+        String id = updateDto.getId();
+        LgmnUserEntity lgmnUserEntity = null;
+        try {
+            lgmnUserEntity = service.getById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (lgmnUserEntity==null) {
+            return Result.error(ResultEnum.DATA_NOT_EXISTS);
+        }
+
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        lgmnUserEntity.setPassword(bCryptPasswordEncoder.encode(updateDto.getPassword()));
+        LgmnUserEntity saveUser = service.update(lgmnUserEntity);
+
+        return Result.success("密码修改成功");
+    }
+
     @PostMapping("/add")
     public Result add(@RequestHeader String Authorization, @RequestBody SaveLgmnUserDto saveDto, Principal principal){
         String account = saveDto.getAccount();

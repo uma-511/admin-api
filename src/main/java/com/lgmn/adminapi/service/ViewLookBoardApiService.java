@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ViewLookBoardApiService extends LgmnAbstractApiService<ViewLookBoardEntity, ViewLookBoardDto, Integer, ViewLookBoardService> {
 
-    @Reference(version = "${demo.service.version}")
+    @Reference(version = "${demo.service.version}",timeout = 10000)
     ViewLookBoardService viewLookBoardService;
 
     @Override

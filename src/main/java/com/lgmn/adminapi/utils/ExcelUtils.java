@@ -1,9 +1,12 @@
 package com.lgmn.adminapi.utils;
 
+import cn.afterturn.easypoi.entity.ImageEntity;
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import com.lgmn.adminapi.vo.DeliveryNoteDetailVo;
 import com.lgmn.umaservices.basic.entity.YjOrderEntity;
+import com.lgmn.utils.image.code.BarCode;
+import com.lgmn.utils.image.code.Code;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;
@@ -76,7 +79,13 @@ public class ExcelUtils {
         // 生成workbook 并导出
         Workbook workbook = null;
         try {
-            workbook = ExcelExportUtil.exportExcel(params, objectToMap(printPojo));
+            Map<String, Object> dataMap = objectToMap(printPojo);
+            Code code = new BarCode();
+            byte[] codeData = code.getBytes(printPojo.getOrderNum(),270,35);
+            ImageEntity imageEntity = new ImageEntity(codeData,270,35);
+            imageEntity.setColspan(4);
+            dataMap.put("orderNumberBarcode",imageEntity);
+            workbook = ExcelExportUtil.exportExcel(params, dataMap);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }

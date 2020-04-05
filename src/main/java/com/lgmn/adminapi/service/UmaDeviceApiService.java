@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UmaDeviceApiService extends LgmnAbstractApiService<UmaDeviceEntity, UmaDeviceDto, Integer, UmaDeviceService> {
 
-    @Reference(version = "${demo.service.version}")
+    @Reference(version = "${demo.service.version}",timeout = 6000)
     private UmaDeviceService service;
 
     @Override
