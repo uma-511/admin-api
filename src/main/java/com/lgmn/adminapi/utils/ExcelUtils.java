@@ -4,6 +4,7 @@ import cn.afterturn.easypoi.entity.ImageEntity;
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import com.lgmn.adminapi.vo.DeliveryNoteDetailVo;
+import com.lgmn.adminapi.vo.RefundNoteDetailVo;
 import com.lgmn.umaservices.basic.entity.YjOrderEntity;
 import com.lgmn.utils.image.code.BarCode;
 import com.lgmn.utils.image.code.Code;
@@ -19,6 +20,51 @@ import java.util.Map;
 
 public class ExcelUtils {
     public static String exportLabelExcel(String templatePath,String exportPath, DeliveryNoteDetailVo printPojo) {
+
+        File templateFile=new File(templatePath);
+        if(!templateFile.exists()){
+            System.out.println("找不到模板文件");
+            try {
+                throw new FileNotFoundException("找不到模板文件");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        // 加载模板
+        TemplateExportParams params = new TemplateExportParams(templatePath);
+        // 生成workbook 并导出
+        Workbook workbook = null;
+        try {
+            workbook = ExcelExportUtil.exportExcel(params, objectToMap(printPojo));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        String savePath=exportPath;
+        File savefile = new File(savePath);
+        if (!savefile.exists()) {
+            boolean result = savefile.mkdirs();
+            System.out.println("目录不存在,进行创建,创建" + (result ? "成功!" : "失败！"));
+        }
+        String filePath = savePath + printPojo.getCustomer().getName()+"_"+printPojo.getCreateDate() + ".xls";
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(filePath);
+            workbook.write(fos);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return filePath;
+    }
+
+    public static String exportLabelExcel(String templatePath,String exportPath, RefundNoteDetailVo printPojo) {
 
         File templateFile=new File(templatePath);
         if(!templateFile.exists()){
