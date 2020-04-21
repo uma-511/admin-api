@@ -355,4 +355,10 @@ public class UMaApiController {
         }
     }
 
+    @ApiOperation(value = "初始化时，校验IP是否有效")
+    @GetMapping("/handheldInit")
+    public Result handheldInit() {
+        return Result.success("成功");
+    }
+
 }
