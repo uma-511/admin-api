@@ -8,4 +8,5 @@ import lombok.Data;
 public class HM_DeliveryNoteVo extends LgmnVo<DeliveryNoteEntity,HM_DeliveryNoteVo> {
     private String deliveryNum;
     private String customer;
+    private Integer id;
 }
