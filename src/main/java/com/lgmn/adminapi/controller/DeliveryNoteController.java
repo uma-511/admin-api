@@ -1,5 +1,6 @@
 package com.lgmn.adminapi.controller;
 
+import com.lgmn.adminapi.dto.DeliveryNote.QueryDeliveryNoteDto;
 import com.lgmn.adminapi.dto.DeliveryNote.SaveDeliveryNoteDto;
 import com.lgmn.adminapi.dto.DeliveryNote.UpdateDeliveryNoteDto;
 import com.lgmn.adminapi.service.CustomerApiService;
@@ -21,6 +22,8 @@ import com.lgmn.umaservices.basic.entity.CustomerEntity;
 import com.lgmn.umaservices.basic.entity.DeliveryListEntity;
 import com.lgmn.umaservices.basic.entity.DeliveryNoteEntity;
 import com.lgmn.userservices.basic.util.UserUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +34,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URLEncoder;
 import java.security.Principal;
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -60,14 +65,58 @@ public class DeliveryNoteController {
     private String exportPath;
 
     @PostMapping("/page")
-    public Result page (@RequestBody DeliveryNoteDto dto) {
+    public Result page (@RequestBody QueryDeliveryNoteDto dto) {
         try {
-            dto.setDelFlag(0);
-            LgmnPage<DeliveryNoteEntity> page = service.page(dto);
+            DeliveryListDto deliveryListDto = new DeliveryListDto();
+            BeanUtils.copyProperties(dto,deliveryListDto);
+
+            List<Integer> deliveryIds = new ArrayList<>();
+            if(StringUtils.isNotEmpty(dto.getClientName())&&StringUtils.isNotEmpty(dto.getDeliveryNum()) &&
+                    StringUtils.isNotEmpty(dto.getColor()) && StringUtils.isNotEmpty(dto.getName()) &&
+                    StringUtils.isNotEmpty(dto.getNumber()) && StringUtils.isNotEmpty(dto.getSpecs()) &&
+                    StringUtils.isNotEmpty(dto.getWidth()) && StringUtils.isNotEmpty(dto.getCreateDates().get(0)) &&
+                    !dto.getClientId().equals(0)) {
+                List<DeliveryListEntity> deliveryLists = deliveryListApiService.list(deliveryListDto);
+
+                if (deliveryLists.size() > 0) {
+                    for (DeliveryListEntity deliveryList : deliveryLists) {
+                        if (deliveryIds.contains(deliveryList.getDeliveryId())) {
+                            continue;
+                        }
+                        deliveryIds.add(deliveryList.getDeliveryId());
+                    }
+                }
+            }
+
+            DeliveryNoteDto deliveryNoteDto = new DeliveryNoteDto();
+            deliveryNoteDto.setDeliveryNum(dto.getDeliveryNum());
+            deliveryNoteDto.setCustomer(dto.getClientName());
+
+            if(dto.getCreateDates()!=null && StringUtils.isNotEmpty(dto.getCreateDates().get(0)) && StringUtils.isNotEmpty(dto.getCreateDates().get(1))){
+                String d1 = dto.getCreateDates().get(0) + " 00:00:00";
+                String d2 = dto.getCreateDates().get(1) + " 23:59:59";
+
+                Date startDate = getTimestamp(d1,true);
+                Date endDate = getTimestamp(d2,false);
+                deliveryNoteDto.setStartCreateTime(new Timestamp(startDate.getTime()));
+                deliveryNoteDto.setEndCreateTime(new Timestamp(endDate.getTime()));
+            }
+            deliveryNoteDto.setIds(deliveryIds);
+            deliveryNoteDto.setDelFlag(0);
+
+            LgmnPage<DeliveryNoteEntity> page = service.page(deliveryNoteDto);
             return Result.success(page);
         } catch (Exception e) {
+            e.printStackTrace();
             return Result.serverError(e.getMessage());
         }
+    }
+
+    private Timestamp getTimestamp(String dateString, boolean start) throws ParseException {
+        String pratten = "yyyy-MM-dd hh:mm:ss";
+        SimpleDateFormat sdf = new SimpleDateFormat(pratten);
+        Date afterDate = sdf.parse(dateString);
+        return new Timestamp(afterDate.getTime());
     }
 
     @PostMapping("/remindpage")
